@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="entries">
+        <item>×0.5</item>
+        <item>×0.75</item>
+        <item>×1.0(デフォルト)</item>
+        <item>×1.25</item>
+        <item>×1.5</item>
+        <item>×1.75</item>
+        <item>×2.0</item>
+    </string-array>
+    <string-array name="entry_values">
+        <item>0.5</item>
+        <item>0.75</item>
+        <item>1.0</item>
+        <item>1.25</item>
+        <item>1.5</item>
+        <item>1.75</item>
+        <item>2.0</item>
+    </string-array>
+    <string-array name="scroll_option">
+        <item>右半分(デフォルト)</item>
+        <item>左半分</item>
+        <item>下三分の一</item>
+    </string-array>
+    <string-array name="scroll_string">
+        <item>right</item>
+        <item>left</item>
+        <item>bottom</item>
+    </string-array>
+
+</resources>

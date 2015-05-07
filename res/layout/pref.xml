@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <ListPreference
+        android:dialogTitle="変更"
+        android:entries="@array/entries"
+        android:entryValues="@array/entry_values"
+        android:key="size_rate"
+        android:summary="カーソルの大きさを変更します"
+        android:title="カーソル倍率" />
+
+    <ListPreference
+        android:dialogTitle="変更"
+        android:entries="@array/entries"
+        android:entryValues="@array/entry_values"
+        android:key="velocity"
+        android:summary="カーソルの移動速度を変更します"
+        android:title="カーソル速度" />
+
+    <ListPreference
+        android:dialogTitle="変更"
+        android:entries="@array/scroll_option"
+        android:entryValues="@array/scroll_string"
+        android:key="range"
+        android:summary="カーソル操作ができる範囲を設定します。"
+        android:title="カーソル操作領域" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="view_cursor_range"
+        android:summary="カーソル操作領域を非可視化にする"
+        android:title="カーソル操作領域表示" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="click_location"
+        android:summary="クリック位置を可視化にする"
+        android:title="クリック位置表示" />
+
+</PreferenceScreen>
