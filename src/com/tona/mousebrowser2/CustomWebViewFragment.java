@@ -50,6 +50,8 @@ public class CustomWebViewFragment extends Fragment {
 	private View mViewLeft, mViewRight, mViewBottom, mViewPointer;
 	private EditText editForm;
 
+	private Bundle mWebViewBundle;
+
 	private boolean isCursorEnabled = false;
 	private boolean isScrollMode = false;
 	private boolean isNoShowCursorRange = false;
@@ -430,5 +432,24 @@ public class CustomWebViewFragment extends Fragment {
 			return mWebView.getTitle();
 		else
 			return "New Page";
+	}
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		mWebViewBundle = new Bundle();
+		mWebView.saveState(mWebViewBundle);
+	}
+
+	/**
+	 * Restore the state of the webview
+	 */
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		if (mWebViewBundle != null) {
+			mWebView.restoreState(mWebViewBundle);
+		}
 	}
 }
