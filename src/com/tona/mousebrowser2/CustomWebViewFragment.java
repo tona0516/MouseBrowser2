@@ -228,10 +228,14 @@ public class CustomWebViewFragment extends Fragment {
 				return false;
 			}
 		});
-		if (mUrl != null) {
-			mWebView.loadUrl(mUrl);
+		if (mWebViewBundle != null) {
+			mWebView.restoreState(mWebViewBundle);
 		} else {
-			mWebView.loadUrl(HOME);
+			if (mUrl != null) {
+				mWebView.loadUrl(mUrl);
+			} else {
+				mWebView.loadUrl(HOME);
+			}
 		}
 	}
 
@@ -436,20 +440,14 @@ public class CustomWebViewFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-
-		mWebViewBundle = new Bundle();
+		if (mWebViewBundle == null)
+			mWebViewBundle = new Bundle();
 		mWebView.saveState(mWebViewBundle);
 	}
 
-	/**
-	 * Restore the state of the webview
-	 */
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-		if (mWebViewBundle != null) {
-			mWebView.restoreState(mWebViewBundle);
-		}
+	public void onDestroy() {
+		super.onDestroy();
+		MainActivity.viewPager.setDisable(false);
 	}
 }
