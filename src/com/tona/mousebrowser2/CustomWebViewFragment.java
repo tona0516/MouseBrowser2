@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -208,24 +209,41 @@ public class CustomWebViewFragment extends Fragment {
 			@Override
 			public boolean onLongClick(View v) {
 				// 長押しした箇所の情報を取得
-				HitTestResult htr = mWebView.getHitTestResult();
+				final HitTestResult htr = mWebView.getHitTestResult();
 				switch (htr.getType()) {
 					case HitTestResult.IMAGE_TYPE :
 						AlertDialog.Builder alertDlg = new AlertDialog.Builder(getActivity());
 						alertDlg.setTitle("画像押下！");
-						alertDlg.setMessage(htr.getExtra());
 						alertDlg.show();
 						return true;
 					case HitTestResult.SRC_IMAGE_ANCHOR_TYPE :
-						AlertDialog.Builder alertDlg2 = new AlertDialog.Builder(getActivity());
-						alertDlg2.setTitle("画像押下！");
-						alertDlg2.setMessage(htr.getExtra());
-						alertDlg2.show();
+						createDialong(htr.getExtra());
+						return true;
+					case HitTestResult.SRC_ANCHOR_TYPE :
+						createDialong(htr.getExtra());
 						return true;
 					default :
 						break;
 				}
 				return false;
+			}
+
+			private void createDialong(final String url) {
+				AlertDialog.Builder alertDlg = new AlertDialog.Builder(getActivity());
+				alertDlg.setTitle("選択");
+				alertDlg.setMessage("新しいタブで開きますか？");
+				alertDlg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						MainActivity.createFragment(url);
+					}
+				});
+				alertDlg.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+				alertDlg.show();
 			}
 		});
 		if (mWebViewBundle != null) {
@@ -363,7 +381,6 @@ public class CustomWebViewFragment extends Fragment {
 		Bitmap bmp2 = Bitmap.createScaledBitmap(bmp, (int) cursor.getWidth(), (int) cursor.getHeight(), false); // 13:16で調整
 		ivMouseCursor.setImageBitmap(bmp2);
 		ivMouseCursor.setLayoutParams(new LayoutParams(WC, WC));
-		// ivMouseCursor.setBackgroundColor(Color.RED);
 		ivMouseCursor.setX(cursor.getX());
 		ivMouseCursor.setY(cursor.getY());
 		if (isCursorEnabled)
@@ -427,16 +444,6 @@ public class CustomWebViewFragment extends Fragment {
 		super.setMenuVisibility(menuVisible);
 	}
 
-	public String getUrl() {
-		return mWebView.getUrl();
-	}
-
-	public String getTitle() {
-		if (mWebView != null)
-			return mWebView.getTitle();
-		else
-			return "New Page";
-	}
 	@Override
 	public void onPause() {
 		super.onPause();

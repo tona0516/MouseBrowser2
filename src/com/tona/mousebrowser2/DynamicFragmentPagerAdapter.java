@@ -160,7 +160,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter{
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return _fragments.get(position).getFragment().getTitle();
+		return _fragments.get(position).getName();
 	}
 
 	@Override
