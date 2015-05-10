@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress_bar" >
 
-        <requestFocus />
+        <requestFocus/>
     </WebView>
 
     <LinearLayout

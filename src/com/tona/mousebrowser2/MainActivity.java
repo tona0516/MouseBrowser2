@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.webkit.WebView;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	public static DynamicFragmentPagerAdapter adapter;
@@ -64,5 +65,14 @@ public class MainActivity extends FragmentActivity {
 			adapter.remove(currentPosition);
 			adapter.notifyDataSetChanged();
 		}
+	}
+	@Override
+	public void onBackPressed() {
+		WebView wv = adapter.get(currentPosition).getWebView();
+		if(wv.canGoBack()){
+			wv.goBack();
+			return;
+		}
+		super.onBackPressed();
 	}
 }

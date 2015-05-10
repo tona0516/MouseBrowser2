@@ -168,8 +168,6 @@ public class CustomWebViewFragment extends Fragment {
 	@SuppressLint("SetJavaScriptEnabled")
 	private void initWebView(View v) {
 		mWebView = (WebView) v.findViewById(R.id.webview);
-		mWebView.getSettings().setUseWideViewPort(true);
-		mWebView.getSettings().setLoadWithOverviewMode(true);
 		WebSettings settings = mWebView.getSettings();
 		settings.setJavaScriptEnabled(true);
 		settings.setUseWideViewPort(true);
@@ -457,4 +455,9 @@ public class CustomWebViewFragment extends Fragment {
 		super.onDestroy();
 		MainActivity.viewPager.setDisable(false);
 	}
+
+	public WebView getWebView() {
+		return mWebView;
+	}
+
 }
