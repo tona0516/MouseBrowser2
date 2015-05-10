@@ -51,7 +51,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public static void createFragment(String url) {
-		if (url.equals(null))
+		if (url == null)
 			adapter.add("page" + (count++), new CustomWebViewFragment(null));
 		else
 			adapter.add("page" + (count++), new CustomWebViewFragment(url));
