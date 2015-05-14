@@ -123,7 +123,6 @@ public class CustomWebViewFragment extends Fragment {
 					btnEnable.setText("ON");
 					createCursorImage();
 					switchViewCursorRange();
-					// onSearchRequested();
 					MainActivity.viewPager.setDisable(true);
 				} else {
 					btnClick.setVisibility(View.INVISIBLE);
@@ -168,6 +167,7 @@ public class CustomWebViewFragment extends Fragment {
 	@SuppressLint("SetJavaScriptEnabled")
 	private void initWebView(View v) {
 		mWebView = (WebView) v.findViewById(R.id.webview);
+		mWebView.requestFocus();
 		WebSettings settings = mWebView.getSettings();
 		settings.setJavaScriptEnabled(true);
 		settings.setUseWideViewPort(true);

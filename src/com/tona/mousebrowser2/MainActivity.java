@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity {
 			addPagetoList(CustomWebViewFragment.HOME);
 		} else {
 			Log.d("TAG", "not empty");
-			for (int i = 0;i<lastPageList.size();i++) {
+			for (int i = 0; i < lastPageList.size(); i++) {
 				String s = lastPageList.get(i);
 				adapter.add("page" + (count++), new CustomWebViewFragment(s));
 			}
@@ -141,8 +141,8 @@ public class MainActivity extends FragmentActivity {
 		}
 		// listに書き込む
 		String stringList = bundle.getString("list"); // key名が"list"のものを取り出す
-		//履歴がないときは新しいインスタンスを返す
-		if(stringList == null)
+		// 履歴がないときは新しいインスタンスを返す
+		if (stringList == null)
 			return list;
 		stringList = stringList.replaceAll("\\[", "");
 		stringList = stringList.replaceAll("\\]", "");
