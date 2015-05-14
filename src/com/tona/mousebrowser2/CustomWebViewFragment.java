@@ -62,7 +62,7 @@ public class CustomWebViewFragment extends Fragment {
 	private Cursor cursor;
 	private float downX, downY;
 
-	private static final String HOME = "https://www.google.co.jp/";
+	public static final String HOME = "https://www.google.co.jp/";
 	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
 	private String mUrl = null;
@@ -189,6 +189,7 @@ public class CustomWebViewFragment extends Fragment {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				editForm.setText(url);
+				MainActivity.setPagetoList(url);
 			}
 		});
 		mWebView.setWebChromeClient(new WebChromeClient() {
