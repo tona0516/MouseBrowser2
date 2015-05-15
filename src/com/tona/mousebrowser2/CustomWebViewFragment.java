@@ -167,7 +167,6 @@ public class CustomWebViewFragment extends Fragment {
 	@SuppressLint("SetJavaScriptEnabled")
 	private void initWebView(View v) {
 		mWebView = (WebView) v.findViewById(R.id.webview);
-		mWebView.requestFocus();
 		WebSettings settings = mWebView.getSettings();
 		settings.setJavaScriptEnabled(true);
 		settings.setUseWideViewPort(true);
