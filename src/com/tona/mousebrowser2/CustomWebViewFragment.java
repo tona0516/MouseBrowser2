@@ -62,7 +62,7 @@ public class CustomWebViewFragment extends Fragment {
 	private Cursor cursor;
 	private float downX, downY;
 
-	public static final String HOME = "https://www.google.co.jp/";
+	public static final String HOME = "http://www.google.co.jp/";
 	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
 	private String mUrl = null;

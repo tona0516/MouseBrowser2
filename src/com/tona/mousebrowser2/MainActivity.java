@@ -18,7 +18,7 @@ import android.view.Window;
 import android.webkit.WebView;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
-	public static DynamicFragmentPagerAdapter adapter;
+	private static DynamicFragmentPagerAdapter adapter;
 	public static int currentPosition = 0;
 	public static int count = 0;
 	public static Editor editor;
@@ -54,6 +54,10 @@ public class MainActivity extends FragmentActivity {
 			public void onPageSelected(int position) {
 				super.onPageSelected(position);
 				currentPosition = position;
+				WebView w = adapter.get(position).getWebView();
+				if(!w.isFocused()){
+					w.requestFocus();
+				}
 			}
 		});
 	}
