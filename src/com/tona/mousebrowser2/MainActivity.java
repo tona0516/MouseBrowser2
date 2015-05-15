@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.Toast;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	private static DynamicFragmentPagerAdapter adapter;
@@ -31,7 +32,8 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		main = this;
-		//main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit().clear().commit();
+		// main.getSharedPreferences("shared_preference",
+		// Context.MODE_PRIVATE).edit().clear().commit();
 		lastPageList = readPreference();
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
@@ -55,7 +57,7 @@ public class MainActivity extends FragmentActivity {
 				super.onPageSelected(position);
 				currentPosition = position;
 				WebView w = adapter.get(position).getWebView();
-				if(!w.isFocused()){
+				if (!w.isFocused()) {
 					w.requestFocus();
 				}
 			}
@@ -70,7 +72,10 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.settings) {
+		if (id == R.id.general_settings) {
+			//startActivity(new Intent(getApplicationContext(), GeneralPref.class));
+			Toast.makeText(getApplicationContext(), "未作成", Toast.LENGTH_SHORT).show();
+		} else if (id == R.id.cursor_settings) {
 			startActivity(new Intent(getApplicationContext(), Pref.class));
 		} else if (id == R.id.create) {
 			createFragment(null);
