@@ -338,17 +338,18 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter{
 	 *
 	 * @param name
 	 *            タブの表示名
-	 * @param fragment
+	 * @param customWebViewFragment
 	 *            追加するFragment
 	 * @exception IllegalArgumentException
 	 *                表示名が重複している場合に発生
 	 */
-	public void add(CharSequence name, CustomWebViewFragment fragment) {
+	public void add(CharSequence name, CustomWebViewFragment customWebViewFragment) {
 		if (hasName(name))
 			throw new IllegalArgumentException("表示名が重複しています。");
 
-		_fragments.add(new FragmentInfo(name, fragment));
+		_fragments.add(new FragmentInfo(name, customWebViewFragment));
 	}
+
 
 	/**
 	 * Fragmentを取得します。
@@ -507,4 +508,6 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter{
 		if (_ftp == null)
 			_ftp = new FragmentTransactionProxy(_fm.beginTransaction());
 	}
+
+
 }

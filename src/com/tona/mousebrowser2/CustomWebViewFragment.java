@@ -39,8 +39,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
-public class CustomWebViewFragment extends Fragment {
 
+public class CustomWebViewFragment extends Fragment {
 	// component
 	private WebView mWebView;
 	private ProgressBar mProgressBar;
@@ -57,6 +57,7 @@ public class CustomWebViewFragment extends Fragment {
 	private boolean isScrollMode = false;
 	private boolean isNoShowCursorRange = false;
 	private boolean isShowClickLocation = false;
+	private boolean isFirstView = true;
 
 	private SharedPreferences pref;
 	private Cursor cursor;
@@ -67,9 +68,15 @@ public class CustomWebViewFragment extends Fragment {
 
 	private String mUrl = null;
 
+	public static final CustomWebViewFragment newInstance(String url){
+		CustomWebViewFragment fragment = new CustomWebViewFragment(url);
+		return fragment;
+	}
+
 	public CustomWebViewFragment(String url) {
 		this.mUrl = url;
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment0, null);
@@ -188,18 +195,20 @@ public class CustomWebViewFragment extends Fragment {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				editForm.setText(url);
-				((MainActivity) getActivity()).setPagetoList(url);
+				if (isFirstView) {
+					isFirstView = false;
+				} else {
+					((MainActivity) getActivity()).setPagetoList(url);
+				}
 			}
 		});
 		mWebView.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public void onProgressChanged(WebView view, int newProgress) {
 				super.onProgressChanged(view, newProgress);
-				mProgressBar.setVisibility(View.VISIBLE);
 				mProgressBar.setProgress(newProgress);
 				if (newProgress == 100) {
 					mProgressBar.setProgress(0);
-					mProgressBar.setVisibility(View.INVISIBLE);
 				}
 			}
 		});

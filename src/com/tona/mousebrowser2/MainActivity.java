@@ -32,8 +32,6 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		main = this;
-		// main.getSharedPreferences("shared_preference",
-		// Context.MODE_PRIVATE).edit().clear().commit();
 		lastPageList = readPreference();
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
@@ -56,13 +54,19 @@ public class MainActivity extends FragmentActivity {
 			public void onPageSelected(int position) {
 				super.onPageSelected(position);
 				currentPosition = position;
+				editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
+				editor.putInt("index", currentPosition);
+				editor.commit();
 				WebView w = adapter.get(position).getWebView();
 				if (!w.isFocused()) {
 					w.requestFocus();
 				}
 			}
 		});
+		Log.d("lastIndex", currentPosition + "");
+		viewPager.setCurrentItem(currentPosition);
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -115,11 +119,12 @@ public class MainActivity extends FragmentActivity {
 		super.onBackPressed();
 	}
 
-	public void addPagetoList(String url) {
+	private void addPagetoList(String url) {
 		lastPageList.add(url);
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
 		editor.commit();
+		Log.d("add", lastPageList.toString());
 	}
 
 	public void setPagetoList(String url) {
@@ -127,13 +132,15 @@ public class MainActivity extends FragmentActivity {
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
 		editor.commit();
+		Log.d("set", lastPageList.toString());
 	}
 
-	public void removePagetoList() {
+	private void removePagetoList() {
 		lastPageList.remove(currentPosition);
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
 		editor.commit();
+		Log.d("remove", lastPageList.toString());
 	}
 
 	private ArrayList<String> readPreference() {
@@ -151,6 +158,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		// listに書き込む
 		String stringList = bundle.getString("list"); // key名が"list"のものを取り出す
+		currentPosition = bundle.getInt("index");
 		// 履歴がないときは新しいインスタンスを返す
 		if (stringList == null)
 			return list;
