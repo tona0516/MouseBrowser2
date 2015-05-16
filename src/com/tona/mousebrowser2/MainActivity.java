@@ -76,10 +76,12 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.general_settings) {
-			// startActivity(new Intent(getApplicationContext(),
-			// GeneralPref.class));
-			Toast.makeText(getApplicationContext(), "未作成", Toast.LENGTH_SHORT).show();
+		if (id == R.id.reload) {
+			adapter.get(currentPosition).getWebView().reload();
+		} else if (id == R.id.general_settings) {
+			startActivity(new Intent(getApplicationContext(), GeneralPref.class));
+			// Toast.makeText(getApplicationContext(), "未作成",
+			// Toast.LENGTH_SHORT).show();
 		} else if (id == R.id.cursor_settings) {
 			startActivity(new Intent(getApplicationContext(), Pref.class));
 		} else if (id == R.id.create) {

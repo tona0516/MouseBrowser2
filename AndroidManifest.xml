@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tona.mousebrowser2.Pref" />
-    </application>
+		<activity android:name="com.tona.mousebrowser2.GeneralPref" />
+        </application>
 
 </manifest>

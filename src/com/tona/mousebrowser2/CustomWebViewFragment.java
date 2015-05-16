@@ -57,6 +57,7 @@ public class CustomWebViewFragment extends Fragment {
 	private boolean isScrollMode = false;
 	private boolean isNoShowCursorRange = false;
 	private boolean isShowClickLocation = false;
+	private boolean isEnableJavaScript = true;
 	private boolean isFirstView = true;
 
 	private SharedPreferences pref;
@@ -175,7 +176,7 @@ public class CustomWebViewFragment extends Fragment {
 	private void initWebView(View v) {
 		mWebView = (WebView) v.findViewById(R.id.webview);
 		WebSettings settings = mWebView.getSettings();
-		settings.setJavaScriptEnabled(true);
+		settings.setJavaScriptEnabled(isEnableJavaScript);
 		settings.setUseWideViewPort(true);
 
 		// マルチタッチズームの有効
@@ -374,6 +375,7 @@ public class CustomWebViewFragment extends Fragment {
 		cursor.setOperationRange(pref.getString("range", "right"));
 		isNoShowCursorRange = pref.getBoolean("view_cursor_range", false);
 		isShowClickLocation = pref.getBoolean("click_location", false);
+		isEnableJavaScript = pref.getBoolean("enable_javascript", true);
 	}
 
 	@Override
