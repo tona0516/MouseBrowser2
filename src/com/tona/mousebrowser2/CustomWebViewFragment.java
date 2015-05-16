@@ -188,7 +188,7 @@ public class CustomWebViewFragment extends Fragment {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				editForm.setText(url);
-				MainActivity.setPagetoList(url);
+				((MainActivity) getActivity()).setPagetoList(url);
 			}
 		});
 		mWebView.setWebChromeClient(new WebChromeClient() {
@@ -233,7 +233,7 @@ public class CustomWebViewFragment extends Fragment {
 				alertDlg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						MainActivity.createFragment(url);
+						((MainActivity) getActivity()).createFragment(url);
 					}
 				});
 				alertDlg.setNegativeButton("No", new DialogInterface.OnClickListener() {

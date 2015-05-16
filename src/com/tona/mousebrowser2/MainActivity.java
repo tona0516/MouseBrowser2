@@ -19,12 +19,12 @@ import android.webkit.WebView;
 import android.widget.Toast;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
-	private static DynamicFragmentPagerAdapter adapter;
-	public static int currentPosition = 0;
-	public static int count = 0;
-	public static Editor editor;
-	public static ArrayList<String> lastPageList;
-	public static MainActivity main;
+	private DynamicFragmentPagerAdapter adapter;
+	private int currentPosition = 0;
+	private int count = 0;
+	private Editor editor;
+	private ArrayList<String> lastPageList;
+	private MainActivity main;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,8 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.general_settings) {
-			//startActivity(new Intent(getApplicationContext(), GeneralPref.class));
+			// startActivity(new Intent(getApplicationContext(),
+			// GeneralPref.class));
 			Toast.makeText(getApplicationContext(), "未作成", Toast.LENGTH_SHORT).show();
 		} else if (id == R.id.cursor_settings) {
 			startActivity(new Intent(getApplicationContext(), Pref.class));
@@ -85,7 +86,7 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public static void createFragment(String url) {
+	public void createFragment(String url) {
 		if (url == null) {
 			adapter.add("page" + (count++), new CustomWebViewFragment(null));
 			addPagetoList(CustomWebViewFragment.HOME);
@@ -97,7 +98,7 @@ public class MainActivity extends FragmentActivity {
 		viewPager.setCurrentItem(adapter.getCount() - 1);
 	}
 
-	public static void removeFragment() {
+	private void removeFragment() {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
 			removePagetoList();
@@ -114,21 +115,21 @@ public class MainActivity extends FragmentActivity {
 		super.onBackPressed();
 	}
 
-	public static void addPagetoList(String url) {
+	public void addPagetoList(String url) {
 		lastPageList.add(url);
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
 		editor.commit();
 	}
 
-	public static void setPagetoList(String url) {
+	public void setPagetoList(String url) {
 		lastPageList.set(currentPosition, url);
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
 		editor.commit();
 	}
 
-	public static void removePagetoList() {
+	public void removePagetoList() {
 		lastPageList.remove(currentPosition);
 		editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
 		editor.putString("list", lastPageList.toString());
