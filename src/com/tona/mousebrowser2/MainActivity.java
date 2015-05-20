@@ -4,19 +4,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
-import android.widget.Toast;
+import android.widget.EditText;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	private DynamicFragmentPagerAdapter adapter;
@@ -63,8 +69,8 @@ public class MainActivity extends FragmentActivity {
 				}
 			}
 		});
-		Log.d("lastIndex", currentPosition + "");
-		viewPager.setCurrentItem(currentPosition);
+		// Log.d("lastIndex", currentPosition + "");
+		// viewPager.setCurrentItem(currentPosition);
 	}
 
 	@Override
@@ -88,10 +94,27 @@ public class MainActivity extends FragmentActivity {
 			createFragment(null);
 		} else if (id == R.id.remove) {
 			removeFragment();
+		} else if (id == R.id.url_bar) {
+			final EditText e = adapter.get(currentPosition).getEditForm();
+			e.setVisibility(View.VISIBLE);
+			e.requestFocus();
+			e.setSelection(0, e.getText().length());
+			main.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Timer t = new Timer();
+					t.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
+						}
+					}, 150);
+				}
+			});
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 	public void createFragment(String url) {
 		if (url == null) {
 			adapter.add("page" + (count++), new CustomWebViewFragment(null));

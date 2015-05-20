@@ -27,5 +27,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="新しいタブ"/>
+    <item
+        android:id="@+id/url_bar"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="検索"/>
 
 </menu>

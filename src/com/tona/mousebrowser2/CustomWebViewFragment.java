@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
@@ -113,6 +114,14 @@ public class CustomWebViewFragment extends Fragment {
 					return true;
 				}
 				return false;
+			}
+		});
+		editForm.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus) {
+					editForm.setVisibility(View.GONE);
+				}
 			}
 		});
 		mLayout.addView(mViewPointer);
@@ -456,6 +465,10 @@ public class CustomWebViewFragment extends Fragment {
 
 	public WebView getWebView() {
 		return mWebView;
+	}
+
+	public EditText getEditForm() {
+		return editForm;
 	}
 
 }
