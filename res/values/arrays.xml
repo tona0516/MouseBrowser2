@@ -20,9 +20,9 @@
         <item>2.0</item>
     </string-array>
     <string-array name="scroll_option">
-        <item>右半分(デフォルト)</item>
-        <item>左半分</item>
-        <item>下三分の一</item>
+        <item>右</item>
+        <item>左</item>
+        <item>下(デフォルト)</item>
     </string-array>
     <string-array name="scroll_string">
         <item>right</item>

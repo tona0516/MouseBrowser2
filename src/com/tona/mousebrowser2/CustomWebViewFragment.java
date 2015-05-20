@@ -359,7 +359,7 @@ public class CustomWebViewFragment extends Fragment {
 	private void readPreference() {
 		cursor.setV(Float.parseFloat(pref.getString("velocity", "1.0")));
 		cursor.setSizeRate(Float.parseFloat(pref.getString("size_rate", "1.0")));
-		cursor.setOperationRange(pref.getString("range", "right"));
+		cursor.setOperationRange(pref.getString("range", "bottom"));
 		isNoShowCursorRange = pref.getBoolean("view_cursor_range", false);
 		isShowClickLocation = pref.getBoolean("click_location", false);
 		isEnableJavaScript = pref.getBoolean("enable_javascript", true);
