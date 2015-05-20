@@ -1,5 +1,6 @@
 package com.tona.mousebrowser2;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import android.annotation.SuppressLint;
@@ -40,7 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
-public class CustomWebViewFragment extends Fragment {
+public class CustomWebViewFragment extends Fragment implements Serializable{
 	// component
 	private WebView mWebView;
 	private ProgressBar mProgressBar;
@@ -68,8 +69,11 @@ public class CustomWebViewFragment extends Fragment {
 
 	private String mUrl = null;
 
+	private CustomWebViewFragment me;
+
 	public CustomWebViewFragment(String url) {
 		this.mUrl = url;
+		me = this;
 	}
 
 	@Override
@@ -181,7 +185,7 @@ public class CustomWebViewFragment extends Fragment {
 				if (isFirstView) {
 					isFirstView = false;
 				} else {
-					((MainActivity) getActivity()).setPagetoList(url);
+					((MainActivity) getActivity()).setPagetoList(me);
 				}
 			}
 		});
