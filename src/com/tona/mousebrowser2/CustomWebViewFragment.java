@@ -33,7 +33,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -46,7 +45,6 @@ public class CustomWebViewFragment extends Fragment {
 	private ProgressBar mProgressBar;
 	private RelativeLayout mLayout;
 	private ImageView ivMouseCursor;
-	private Button btnClick;
 	private ToggleButton btnEnable;
 	private View mViewLeft, mViewRight, mViewBottom, mViewPointer;
 	private EditText editForm;
@@ -62,14 +60,14 @@ public class CustomWebViewFragment extends Fragment {
 
 	private SharedPreferences pref;
 	private Cursor cursor;
-	private float downX, downY;
+	private float downX, downY, upX, upY;
 
 	public static final String HOME = "http://www.google.co.jp/";
 	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
 	private String mUrl = null;
 
-	public static final CustomWebViewFragment newInstance(String url){
+	public static final CustomWebViewFragment newInstance(String url) {
 		CustomWebViewFragment fragment = new CustomWebViewFragment(url);
 		return fragment;
 	}
@@ -94,7 +92,6 @@ public class CustomWebViewFragment extends Fragment {
 		mViewBottom = (View) v.findViewById(R.id.view_bottom);
 		mProgressBar = (ProgressBar) v.findViewById(R.id.progress_bar);
 		btnEnable = (ToggleButton) v.findViewById(R.id.btn_enable);
-		btnClick = (Button) v.findViewById(R.id.btn_click);
 		mViewPointer = new PointerView(getActivity());
 		editForm = (EditText) v.findViewById(R.id.form);
 		editForm.setOnKeyListener(new View.OnKeyListener() {
@@ -125,7 +122,6 @@ public class CustomWebViewFragment extends Fragment {
 			public void onClick(View v) {
 				mViewPointer.invalidate();
 				if (!isCursorEnabled) {
-					btnClick.setVisibility(View.VISIBLE);
 					mWebView.setOnTouchListener(new myOnSetTouchListener());
 					isCursorEnabled = true;
 					btnEnable.setText("ON");
@@ -133,7 +129,6 @@ public class CustomWebViewFragment extends Fragment {
 					switchViewCursorRange();
 					MainActivity.viewPager.setDisable(true);
 				} else {
-					btnClick.setVisibility(View.INVISIBLE);
 					mWebView.setOnTouchListener(null);
 					isCursorEnabled = false;
 					btnEnable.setText("OFF");
@@ -143,33 +138,16 @@ public class CustomWebViewFragment extends Fragment {
 				}
 			}
 		});
+	}
 
-		btnClick.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mViewPointer.invalidate();
-				mWebView.setOnTouchListener(null);
-				MotionEvent ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, cursor.getX(), cursor.getY(), 0);
-				mLayout.dispatchTouchEvent(ev);
-				ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, cursor.getX(), cursor.getY(), 0);
-				mLayout.dispatchTouchEvent(ev);
-				mWebView.setOnTouchListener(new myOnSetTouchListener());
-			}
-		});
-
-		btnClick.setOnLongClickListener(new View.OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				mViewPointer.invalidate();
-				mWebView.setOnTouchListener(null);
-				MotionEvent ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, cursor.getX(), cursor.getY(), 0);
-				mLayout.dispatchTouchEvent(ev);
-				ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis() + 1000, MotionEvent.ACTION_UP, cursor.getX(), cursor.getY(), 0);
-				mLayout.dispatchTouchEvent(ev);
-				mWebView.setOnTouchListener(new myOnSetTouchListener());
-				return false;
-			}
-		});
+	private void clickByCursor() {
+		mViewPointer.invalidate();
+		mWebView.setOnTouchListener(null);
+		MotionEvent ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, cursor.getX(), cursor.getY(), 0);
+		mLayout.dispatchTouchEvent(ev);
+		ev = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, cursor.getX(), cursor.getY(), 0);
+		mLayout.dispatchTouchEvent(ev);
+		mWebView.setOnTouchListener(new myOnSetTouchListener());
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -320,6 +298,15 @@ public class CustomWebViewFragment extends Fragment {
 					break;
 				case MotionEvent.ACTION_UP :
 					isScrollMode = false;
+					upX = event.getX();
+					upY = event.getY();
+					float absX = Math.abs(downX - upX);
+					float absY = Math.abs(downY - upY);
+					Log.d("ABS", absX + "," + absY);
+					if (absX < 10 && absY < 10) {
+						clickByCursor();
+						return true;
+					}
 					return false;
 				default :
 					break;
@@ -404,21 +391,21 @@ public class CustomWebViewFragment extends Fragment {
 			Log.d("range", cursor.getOperationRange());
 			if (cursor.getOperationRange().equals("right")) {
 				mViewRight.setVisibility(View.VISIBLE);
-				mViewLeft.setVisibility(View.INVISIBLE);
-				mViewBottom.setVisibility(View.INVISIBLE);
+				mViewLeft.setVisibility(View.GONE);
+				mViewBottom.setVisibility(View.GONE);
 			} else if (cursor.getOperationRange().equals("left")) {
 				mViewLeft.setVisibility(View.VISIBLE);
-				mViewRight.setVisibility(View.INVISIBLE);
-				mViewBottom.setVisibility(View.INVISIBLE);
+				mViewRight.setVisibility(View.GONE);
+				mViewBottom.setVisibility(View.GONE);
 			} else if (cursor.getOperationRange().equals("bottom")) {
 				mViewBottom.setVisibility(View.VISIBLE);
-				mViewLeft.setVisibility(View.INVISIBLE);
-				mViewRight.setVisibility(View.INVISIBLE);
+				mViewLeft.setVisibility(View.GONE);
+				mViewRight.setVisibility(View.GONE);
 			}
 		} else {
-			mViewLeft.setVisibility(View.INVISIBLE);
-			mViewRight.setVisibility(View.INVISIBLE);
-			mViewBottom.setVisibility(View.INVISIBLE);
+			mViewLeft.setVisibility(View.GONE);
+			mViewRight.setVisibility(View.GONE);
+			mViewBottom.setVisibility(View.GONE);
 		}
 	}
 
