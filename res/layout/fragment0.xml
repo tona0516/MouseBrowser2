@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:hint="URL or search word "
             android:imeOptions="actionSearch"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
