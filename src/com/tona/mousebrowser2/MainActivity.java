@@ -34,14 +34,14 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(null); //これでUnable to instantiate Fragmentを回避
+		Log.d("onCreate", savedInstanceState+"");
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		main = this;
 		lastPageList = readPreference();
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(5);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
 		if (lastPageList.isEmpty()) {
 			Log.d("TAG", "empty");
@@ -99,6 +99,7 @@ public class MainActivity extends FragmentActivity {
 			e.setVisibility(View.VISIBLE);
 			e.requestFocus();
 			e.setSelection(0, e.getText().length());
+			//遅らせてフォーカスがセットされるのを待つ
 			main.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -109,7 +110,7 @@ public class MainActivity extends FragmentActivity {
 							InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 							inputMethodManager.showSoftInput(e, InputMethodManager.SHOW_IMPLICIT);
 						}
-					}, 150);
+					}, 200);
 				}
 			});
 		}

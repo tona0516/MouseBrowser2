@@ -68,11 +68,6 @@ public class CustomWebViewFragment extends Fragment {
 
 	private String mUrl = null;
 
-	public static final CustomWebViewFragment newInstance(String url) {
-		CustomWebViewFragment fragment = new CustomWebViewFragment(url);
-		return fragment;
-	}
-
 	public CustomWebViewFragment(String url) {
 		this.mUrl = url;
 	}
