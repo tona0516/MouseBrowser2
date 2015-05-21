@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 public class CustomWebView extends WebView implements Serializable {
-	private static final long serialVersionUID = -2816624984788184939L;
+	public static final long serialVersionUID = -2816624984788184939L;
 
 	public CustomWebView(Context context) {
 		super(context);

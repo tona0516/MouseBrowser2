@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity {
 	// private ArrayList<String> lastPageList;
 	private MainActivity main;
 
-	private ArrayList<CustomWebView> webViewList;
+	public ArrayList<CustomWebView> webViewList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +270,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		if (ois != null) {
 			try {
-				while ((o = (ArrayList<CustomWebView>) ois.readObject()) != null);
+				o = (ArrayList<CustomWebView>) ois.readObject();
 				fis.close();
 				ois.close();
 			} catch (OptionalDataException e) {
