@@ -40,9 +40,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
-public class CustomWebViewFragment extends Fragment{
+public class CustomWebViewFragment extends Fragment {
 	// component
-	private CustomWebView mWebView;
+	private WebView mWebView;
 	private ProgressBar mProgressBar;
 	private RelativeLayout mLayout;
 	private ImageView ivMouseCursor;
@@ -58,6 +58,7 @@ public class CustomWebViewFragment extends Fragment{
 	private boolean isShowClickLocation = false;
 	private boolean isEnableJavaScript = true;
 	private boolean isFirstView = true;
+	private boolean isReturn = false;
 
 	private SharedPreferences pref;
 	private Cursor cursor;
@@ -68,9 +69,8 @@ public class CustomWebViewFragment extends Fragment{
 
 	private String mUrl = null;
 
-	public CustomWebViewFragment(String url, CustomWebView wv) {
+	public CustomWebViewFragment(String url) {
 		this.mUrl = url;
-		mWebView = wv;
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class CustomWebViewFragment extends Fragment{
 		if (mWebView != null) {
 			return;
 		}
-		mWebView = (CustomWebView) v.findViewById(R.id.webview);
+		mWebView = (WebView) v.findViewById(R.id.webview);
 		WebSettings settings = mWebView.getSettings();
 		settings.setJavaScriptEnabled(isEnableJavaScript);
 		settings.setUseWideViewPort(true);
@@ -184,8 +184,10 @@ public class CustomWebViewFragment extends Fragment{
 				editForm.setText(url);
 				if (isFirstView) {
 					isFirstView = false;
+				} else if (isReturn) {
+					isReturn = false;
 				} else {
-					((MainActivity) getActivity()).setPagetoList(mWebView);
+					((MainActivity) getActivity()).setPagetoList(url);
 				}
 			}
 		});
@@ -462,11 +464,15 @@ public class CustomWebViewFragment extends Fragment{
 		MainActivity.viewPager.setDisable(false);
 	}
 
-	public CustomWebView getWebView() {
+	public WebView getWebView() {
 		return mWebView;
 	}
 
 	public EditText getEditForm() {
 		return editForm;
+	}
+
+	public void setIsReturn(boolean bool){
+		isReturn = bool;
 	}
 }

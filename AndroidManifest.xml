@@ -9,7 +9,7 @@
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -19,7 +19,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:hardwareAccelerated="false"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tona.mousebrowser2.Pref" />
-		<activity android:name="com.tona.mousebrowser2.GeneralPref" />
-        </application>
+        <activity android:name="com.tona.mousebrowser2.GeneralPref" />
+    </application>
 
 </manifest>

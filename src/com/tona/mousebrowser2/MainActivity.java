@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,66 +30,51 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.Toast;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	private DynamicFragmentPagerAdapter adapter;
 	private int currentPosition = 0;
 	private int count = 0;
-	private Editor editor;
-	// private ArrayList<String> lastPageList;
 	private MainActivity main;
 
-	public ArrayList<CustomWebView> webViewList;
+	private ArrayList<ArrayList<String>> urlList;
+	private ArrayList<Integer> indexList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(null); // これでUnable to instantiate Fragmentを回避
-		webViewList = readWebViewList();
+		readHistoryList();
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		main = this;
-		// lastPageList = readPreference();
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
-		if (webViewList.isEmpty()) {
-			CustomWebViewFragment f = new CustomWebViewFragment(null, null);
+		if (urlList.isEmpty()) {
+			CustomWebViewFragment f = new CustomWebViewFragment(null);
 			adapter.add("page" + (count++), f);
-			addPagetoList(f.getWebView());
+			addPagetoList(CustomWebViewFragment.HOME);
 		} else {
-			for (CustomWebView w : webViewList) {
-				CustomWebViewFragment f = new CustomWebViewFragment(null, w);
+			for (ArrayList<String> list : urlList) {
+				CustomWebViewFragment f = new CustomWebViewFragment(list.get(list.size() - 1));
 				adapter.add("page" + (count++), f);
 			}
 		}
-		// if (lastPageList.isEmpty()) {
-		// Log.d("TAG", "empty");
-		// adapter.add("page" + (count++), new CustomWebViewFragment(null));
-		// addPagetoList(CustomWebViewFragment.HOME);
-		// } else {
-		// Log.d("TAG", "not empty");
-		// for (int i = 0; i < lastPageList.size(); i++) {
-		// String s = lastPageList.get(i);
-		// adapter.add("page" + (count++), new CustomWebViewFragment(s));
-		// }
-		// }
 		viewPager.setAdapter(adapter);
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
 				super.onPageSelected(position);
 				currentPosition = position;
-				editor = main.getSharedPreferences("shared_preference", Context.MODE_PRIVATE).edit();
-				editor.putInt("index", currentPosition);
-				editor.commit();
 				WebView w = adapter.get(position).getWebView();
-				if (!w.isFocused()) {
-					w.requestFocus();
+				if (w != null) {
+					if (!w.isFocused()) {
+						w.requestFocus();
+					}
 				}
 			}
 		});
-		// Log.d("lastIndex", currentPosition + "");
-		// viewPager.setCurrentItem(currentPosition);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,12 +89,10 @@ public class MainActivity extends FragmentActivity {
 			adapter.get(currentPosition).getWebView().reload();
 		} else if (id == R.id.general_settings) {
 			startActivity(new Intent(getApplicationContext(), GeneralPref.class));
-			// Toast.makeText(getApplicationContext(), "未作成",
-			// Toast.LENGTH_SHORT).show();
 		} else if (id == R.id.cursor_settings) {
 			startActivity(new Intent(getApplicationContext(), Pref.class));
 		} else if (id == R.id.create) {
-			createFragment(null);
+			createFragment(CustomWebViewFragment.HOME);
 		} else if (id == R.id.remove) {
 			removeFragment();
 		} else if (id == R.id.url_bar) {
@@ -134,13 +118,12 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	public void createFragment(String url) {
-		CustomWebViewFragment f = new CustomWebViewFragment(url, null);
+		CustomWebViewFragment f = new CustomWebViewFragment(url);
 		adapter.add("page" + (count++), f);
-		addPagetoList(f.getWebView());
+		addPagetoList(url);
 		adapter.notifyDataSetChanged();
 		viewPager.setCurrentItem(adapter.getCount() - 1);
 	}
-
 	private void removeFragment() {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
@@ -150,129 +133,105 @@ public class MainActivity extends FragmentActivity {
 	}
 	@Override
 	public void onBackPressed() {
-		WebView wv = adapter.get(currentPosition).getWebView();
-		if (wv.canGoBack()) {
-			wv.goBack();
+		ArrayList<String> list = urlList.get(currentPosition);
+		CustomWebViewFragment f = adapter.get(currentPosition);
+
+		int i = indexList.get(currentPosition);
+		if (i - 1 > -1) {
+			f.getWebView().loadUrl(list.get(i - 1));
+			indexList.set(currentPosition, i - 1);
+			f.setIsReturn(true);
+			return;
+		} else {
+			Toast.makeText(this, "last page", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		super.onBackPressed();
 	}
 
-	private void addPagetoList(CustomWebView w) {
-		// lastPageList.add(url);
-		// editor = main.getSharedPreferences("shared_preference",
-		// Context.MODE_PRIVATE).edit();
-		// editor.putString("list", lastPageList.toString());
-		// editor.commit();
-		// Log.d("add", lastPageList.toString());
-		webViewList.add(w);
-		writeWebViewList();
+	private void addPagetoList(String url) {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add(url);
+		urlList.add(list);
+		indexList.add(0);
+		writeUrlList();
 	}
 
-	public void setPagetoList(CustomWebView w) {
-		// lastPageList.set(currentPosition, url);
-		// editor = main.getSharedPreferences("shared_preference",
-		// Context.MODE_PRIVATE).edit();
-		// editor.putString("list", lastPageList.toString());
-		// editor.commit();
-		// Log.d("set", lastPageList.toString());
-		webViewList.set(currentPosition, w);
-		writeWebViewList();
+	public void setPagetoList(String url) {
+		ArrayList<String> list = urlList.get(currentPosition);
+		int i = indexList.get(currentPosition);
+		if (i == list.size() - 1) { // 現在のページが最新なら
+			list.add(url);
+		} else { // そうでなければ
+			list.set(i + 1, url);
+		}
+		indexList.set(currentPosition, i + 1);
+		urlList.set(currentPosition, list);
+		writeUrlList();
 	}
 
 	private void removePagetoList() {
-		// lastPageList.remove(currentPosition);
-		// editor = main.getSharedPreferences("shared_preference",
-		// Context.MODE_PRIVATE).edit();
-		// editor.putString("list", lastPageList.toString());
-		// editor.commit();
-		// Log.d("remove", lastPageList.toString());
-		webViewList.remove(currentPosition);
-		writeWebViewList();
+		urlList.remove(currentPosition);
+		indexList.remove(currentPosition);
+		writeUrlList();
 	}
 
-	private ArrayList<String> readPreference() {
-		ArrayList<String> list = new ArrayList<String>();
-
-		// 一旦bundleに保存
-		Bundle bundle = new Bundle(); // 保存用のバンドル
-		Map<String, ?> prefKV = getApplicationContext().getSharedPreferences("shared_preference", Context.MODE_PRIVATE).getAll();
-		Set<String> keys = prefKV.keySet();
-		for (String key : keys) {
-			Object value = prefKV.get(key);
-			if (value instanceof String) {
-				bundle.putString(key, (String) value);
-			}
-		}
-		// listに書き込む
-		String stringList = bundle.getString("list"); // key名が"list"のものを取り出す
-		currentPosition = bundle.getInt("index");
-		// 履歴がないときは新しいインスタンスを返す
-		if (stringList == null)
-			return list;
-		stringList = stringList.replaceAll("\\[", "");
-		stringList = stringList.replaceAll("\\]", "");
-
-		if (stringList.contains(",")) {
-			String[] splitter = stringList.split(",");
-			list.addAll(Arrays.asList(splitter));
-		} else {
-			list.add(stringList);
-		}
-		Log.d("TAG", "" + list);
-		return list;
-	}
-
-	private void writeWebViewList() {
+	private void writeUrlList() {
+		Log.d("indexList", indexList + "");
 		ObjectOutputStream oos = null;
 		FileOutputStream fos = null;
+		ObjectOutputStream oos2 = null;
+		FileOutputStream fos2 = null;
 		try {
-			fos = openFileOutput("webview.obj", MODE_PRIVATE);
+			fos = openFileOutput("url.obj", MODE_PRIVATE);
 			oos = new ObjectOutputStream(fos);
+			fos2 = openFileOutput("index.obj", MODE_PRIVATE);
+			oos2 = new ObjectOutputStream(fos2);
 		} catch (FileNotFoundException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
 		try {
-			Log.d("TAG", fos + "");
-			Log.d("TAG", oos + "");
-			Log.d("write", webViewList + "");
-			oos.writeObject(webViewList);
+			oos.writeObject(urlList);
+			oos2.writeObject(indexList);
 			fos.flush();
 			fos.close();
 			oos.flush();
 			oos.close();
-			Log.d("wrote", webViewList + "");
+			fos2.flush();
+			fos2.close();
+			oos2.flush();
+			oos2.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private ArrayList<CustomWebView> readWebViewList() {
-		ArrayList<CustomWebView> o = null;
+	private void readHistoryList() {
 		ObjectInputStream ois = null;
 		FileInputStream fis = null;
+		ObjectInputStream ois2 = null;
+		FileInputStream fis2 = null;
 		try {
-			fis = openFileInput("webview.obj");
+			fis = openFileInput("url.obj");
 			ois = new ObjectInputStream(fis);
+			fis2 = openFileInput("index.obj");
+			ois2 = new ObjectInputStream(fis2);
 		} catch (StreamCorruptedException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		} catch (FileNotFoundException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
-		if (ois != null) {
+		if (ois != null && ois2 != null) {
 			try {
-				o = (ArrayList<CustomWebView>) ois.readObject();
+				urlList = (ArrayList<ArrayList<String>>) ois.readObject();
+				indexList = (ArrayList<Integer>) ois2.readObject();
 				fis.close();
 				ois.close();
+				fis2.close();
+				ois2.close();
 			} catch (OptionalDataException e) {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
@@ -281,10 +240,9 @@ public class MainActivity extends FragmentActivity {
 				e.printStackTrace();
 			}
 		}
-		Log.d("exist", o + "");
-		if (o != null)
-			return o;
-		else
-			return new ArrayList<CustomWebView>();
+		if (urlList == null)
+			urlList = new ArrayList<ArrayList<String>>();
+		if (indexList == null)
+			indexList = new ArrayList<Integer>();
 	}
 }
