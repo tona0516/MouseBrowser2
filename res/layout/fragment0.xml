@@ -26,13 +26,13 @@
             android:max="100"
             android:progress="0" />
 
-        <WebView
+        <com.tona.mousebrowser2.CustomWebView
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
             <requestFocus />
-        </WebView>
+        </com.tona.mousebrowser2.CustomWebView>
     </LinearLayout>
 
     <LinearLayout

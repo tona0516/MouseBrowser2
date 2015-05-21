@@ -1,6 +1,5 @@
 package com.tona.mousebrowser2;
 
-import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,11 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
-import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
@@ -41,7 +38,7 @@ public class MainActivity extends FragmentActivity {
 	// private ArrayList<String> lastPageList;
 	private MainActivity main;
 
-	private CustomFragmentList webViewList;
+	private ArrayList<CustomWebView> webViewList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +52,13 @@ public class MainActivity extends FragmentActivity {
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
 		if (webViewList.isEmpty()) {
-			CustomWebViewFragment f = new CustomWebViewFragment(null);
+			CustomWebViewFragment f = new CustomWebViewFragment(null, null);
 			adapter.add("page" + (count++), f);
-			addPagetoList(f);
+			addPagetoList(f.getWebView());
 		} else {
-			for (int i = 0; i < webViewList.size(); i++) {
-				adapter.add("page" + (count++), webViewList.get(i));
+			for (CustomWebView w : webViewList) {
+				CustomWebViewFragment f = new CustomWebViewFragment(null, w);
+				adapter.add("page" + (count++), f);
 			}
 		}
 		// if (lastPageList.isEmpty()) {
@@ -136,9 +134,9 @@ public class MainActivity extends FragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	public void createFragment(String url) {
-		CustomWebViewFragment f = new CustomWebViewFragment(url);
+		CustomWebViewFragment f = new CustomWebViewFragment(url, null);
 		adapter.add("page" + (count++), f);
-		addPagetoList(f);
+		addPagetoList(f.getWebView());
 		adapter.notifyDataSetChanged();
 		viewPager.setCurrentItem(adapter.getCount() - 1);
 	}
@@ -160,25 +158,25 @@ public class MainActivity extends FragmentActivity {
 		super.onBackPressed();
 	}
 
-	private void addPagetoList(CustomWebViewFragment v) {
+	private void addPagetoList(CustomWebView w) {
 		// lastPageList.add(url);
 		// editor = main.getSharedPreferences("shared_preference",
 		// Context.MODE_PRIVATE).edit();
 		// editor.putString("list", lastPageList.toString());
 		// editor.commit();
 		// Log.d("add", lastPageList.toString());
-		webViewList.add(v);
+		webViewList.add(w);
 		writeWebViewList();
 	}
 
-	public void setPagetoList(CustomWebViewFragment v) {
+	public void setPagetoList(CustomWebView w) {
 		// lastPageList.set(currentPosition, url);
 		// editor = main.getSharedPreferences("shared_preference",
 		// Context.MODE_PRIVATE).edit();
 		// editor.putString("list", lastPageList.toString());
 		// editor.commit();
 		// Log.d("set", lastPageList.toString());
-		webViewList.set(currentPosition, v);
+		webViewList.set(currentPosition, w);
 		writeWebViewList();
 	}
 
@@ -229,7 +227,7 @@ public class MainActivity extends FragmentActivity {
 		ObjectOutputStream oos = null;
 		FileOutputStream fos = null;
 		try {
-			fos = openFileOutput("webview", MODE_PRIVATE);
+			fos = openFileOutput("webview.obj", MODE_PRIVATE);
 			oos = new ObjectOutputStream(fos);
 		} catch (FileNotFoundException e1) {
 			// TODO 自動生成された catch ブロック
@@ -247,17 +245,18 @@ public class MainActivity extends FragmentActivity {
 			fos.close();
 			oos.flush();
 			oos.close();
+			Log.d("wrote", webViewList + "");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private CustomFragmentList readWebViewList() {
-		Object o = null;
+	private ArrayList<CustomWebView> readWebViewList() {
+		ArrayList<CustomWebView> o = null;
 		ObjectInputStream ois = null;
 		FileInputStream fis = null;
 		try {
-			fis = openFileInput("webview");
+			fis = openFileInput("webview.obj");
 			ois = new ObjectInputStream(fis);
 		} catch (StreamCorruptedException e1) {
 			// TODO 自動生成された catch ブロック
@@ -271,11 +270,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		if (ois != null) {
 			try {
-				while ((o = ois.readObject()) != null) {
-					if (o instanceof CustomFragmentList) {
-						System.out.println(((CustomFragmentList) o).toString());
-					}
-				}
+				while ((o = (ArrayList<CustomWebView>) ois.readObject()) != null);
 				fis.close();
 				ois.close();
 			} catch (OptionalDataException e) {
@@ -288,12 +283,8 @@ public class MainActivity extends FragmentActivity {
 		}
 		Log.d("exist", o + "");
 		if (o != null)
-			return (CustomFragmentList) o;
+			return o;
 		else
-			return new CustomFragmentList();
-	}
-
-	public static class CustomFragmentList extends LinkedList<CustomWebViewFragment> implements Serializable {
-		private static final long serialVersionUID = 19920516L;
+			return new ArrayList<CustomWebView>();
 	}
 }

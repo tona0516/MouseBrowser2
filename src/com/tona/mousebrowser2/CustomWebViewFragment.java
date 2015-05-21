@@ -1,6 +1,5 @@
 package com.tona.mousebrowser2;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import android.annotation.SuppressLint;
@@ -41,9 +40,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
-public class CustomWebViewFragment extends Fragment implements Serializable{
+public class CustomWebViewFragment extends Fragment{
 	// component
-	private WebView mWebView;
+	private CustomWebView mWebView;
 	private ProgressBar mProgressBar;
 	private RelativeLayout mLayout;
 	private ImageView ivMouseCursor;
@@ -69,11 +68,9 @@ public class CustomWebViewFragment extends Fragment implements Serializable{
 
 	private String mUrl = null;
 
-	private CustomWebViewFragment me;
-
-	public CustomWebViewFragment(String url) {
+	public CustomWebViewFragment(String url, CustomWebView wv) {
 		this.mUrl = url;
-		me = this;
+		mWebView = wv;
 	}
 
 	@Override
@@ -160,7 +157,10 @@ public class CustomWebViewFragment extends Fragment implements Serializable{
 
 	@SuppressLint("SetJavaScriptEnabled")
 	private void initWebView(View v) {
-		mWebView = (WebView) v.findViewById(R.id.webview);
+		if (mWebView != null) {
+			return;
+		}
+		mWebView = (CustomWebView) v.findViewById(R.id.webview);
 		WebSettings settings = mWebView.getSettings();
 		settings.setJavaScriptEnabled(isEnableJavaScript);
 		settings.setUseWideViewPort(true);
@@ -185,7 +185,7 @@ public class CustomWebViewFragment extends Fragment implements Serializable{
 				if (isFirstView) {
 					isFirstView = false;
 				} else {
-					((MainActivity) getActivity()).setPagetoList(me);
+					((MainActivity) getActivity()).setPagetoList(mWebView);
 				}
 			}
 		});
@@ -462,12 +462,11 @@ public class CustomWebViewFragment extends Fragment implements Serializable{
 		MainActivity.viewPager.setDisable(false);
 	}
 
-	public WebView getWebView() {
+	public CustomWebView getWebView() {
 		return mWebView;
 	}
 
 	public EditText getEditForm() {
 		return editForm;
 	}
-
 }
