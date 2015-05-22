@@ -25,7 +25,6 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.widget.EditText;
-import android.widget.Toast;
 public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	private DynamicFragmentPagerAdapter adapter;
@@ -46,7 +45,6 @@ public class MainActivity extends FragmentActivity {
 		main = this;
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(10);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
 		if (urlList.isEmpty()) {
 			CustomWebViewFragment f = new CustomWebViewFragment(null);
@@ -123,12 +121,14 @@ public class MainActivity extends FragmentActivity {
 		adapter.notifyDataSetChanged();
 		addPagetoList(url);
 		viewPager.setCurrentItem(adapter.getCount() - 1);
+		viewPager.setOffscreenPageLimit(adapter.getCount()+1);
 	}
-	
+
 	private void removeFragment() {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
 			adapter.notifyDataSetChanged();
+			viewPager.setCurrentItem(previousPosition);
 			removePagetoList();
 		}
 	}
@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity {
 			f.setIsReturn(true);
 			return;
 		} else {
-			Toast.makeText(this, "last page", Toast.LENGTH_SHORT).show();
+			finish();
 			return;
 		}
 	}

@@ -34,13 +34,15 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
-public class CustomWebViewFragment extends Fragment {
+public class CustomWebViewFragment extends Fragment{
 	// component
 	private WebView mWebView;
 	private ProgressBar mProgressBar;
