@@ -124,6 +124,7 @@ public class MainActivity extends FragmentActivity {
 		addPagetoList(url);
 		viewPager.setCurrentItem(adapter.getCount() - 1);
 	}
+	
 	private void removeFragment() {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
