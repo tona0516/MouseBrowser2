@@ -65,8 +65,8 @@ public class MainActivity extends FragmentActivity {
 				super.onPageSelected(position);
 				previousPosition = currentPosition;
 				currentPosition = position;
-				Log.d("cur", currentPosition+"");
-				Log.d("pre", previousPosition+"");
+				Log.d("cur", currentPosition + "");
+				Log.d("pre", previousPosition + "");
 				WebView w = adapter.get(position).getWebView();
 				if (w != null) {
 					if (!w.isFocused()) {
@@ -128,7 +128,8 @@ public class MainActivity extends FragmentActivity {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
 			adapter.notifyDataSetChanged();
-			removePagetoList();		}
+			removePagetoList();
+		}
 	}
 	@Override
 	public void onBackPressed() {
@@ -152,7 +153,7 @@ public class MainActivity extends FragmentActivity {
 		list.add(url);
 		urlList.add(list);
 		indexList.add(0);
-		writeUrlList();
+		writeHistoryList();
 	}
 
 	public void setPagetoList(String url) {
@@ -165,16 +166,16 @@ public class MainActivity extends FragmentActivity {
 		}
 		indexList.set(currentPosition, i + 1);
 		urlList.set(currentPosition, list);
-		writeUrlList();
+		writeHistoryList();
 	}
 
 	private void removePagetoList() {
 		urlList.remove(currentPosition);
 		indexList.remove(currentPosition);
-		writeUrlList();
+		writeHistoryList();
 	}
 
-	private void writeUrlList() {
+	private void writeHistoryList() {
 		Log.d("indexList", indexList + "");
 		ObjectOutputStream oos = null;
 		FileOutputStream fos = null;
