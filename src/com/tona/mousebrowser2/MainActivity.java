@@ -9,20 +9,15 @@ import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +30,7 @@ public class MainActivity extends FragmentActivity {
 	public static CustomViewPager viewPager;
 	private DynamicFragmentPagerAdapter adapter;
 	private int currentPosition = 0;
+	private int previousPosition = 0;
 	private int count = 0;
 	private MainActivity main;
 
@@ -50,6 +46,7 @@ public class MainActivity extends FragmentActivity {
 		main = this;
 
 		viewPager = (CustomViewPager) findViewById(R.id.pager);
+		viewPager.setOffscreenPageLimit(10);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
 		if (urlList.isEmpty()) {
 			CustomWebViewFragment f = new CustomWebViewFragment(null);
@@ -66,7 +63,10 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onPageSelected(int position) {
 				super.onPageSelected(position);
+				previousPosition = currentPosition;
 				currentPosition = position;
+				Log.d("cur", currentPosition+"");
+				Log.d("pre", previousPosition+"");
 				WebView w = adapter.get(position).getWebView();
 				if (w != null) {
 					if (!w.isFocused()) {
@@ -120,16 +120,15 @@ public class MainActivity extends FragmentActivity {
 	public void createFragment(String url) {
 		CustomWebViewFragment f = new CustomWebViewFragment(url);
 		adapter.add("page" + (count++), f);
-		addPagetoList(url);
 		adapter.notifyDataSetChanged();
+		addPagetoList(url);
 		viewPager.setCurrentItem(adapter.getCount() - 1);
 	}
 	private void removeFragment() {
 		if (adapter.getCount() != 1) {
 			adapter.remove(currentPosition);
-			removePagetoList();
 			adapter.notifyDataSetChanged();
-		}
+			removePagetoList();		}
 	}
 	@Override
 	public void onBackPressed() {
